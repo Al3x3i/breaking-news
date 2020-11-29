@@ -35,6 +35,7 @@ public class OpenNLPAEnglishAnalyzer {
         try {
             text = replaceAllSpecialCharacterByEmptyCharacter(text);
 
+            // TODO Resolve performance issue
             POSModel posModel = getPosModel();
             POSTaggerME tagger = new POSTaggerME(posModel);
 

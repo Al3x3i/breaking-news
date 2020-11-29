@@ -1,6 +1,5 @@
 package com.breaking.news;
 
-import com.breaking.news.BreakingNewsService.WordsFrequency;
 import com.breaking.news.rss.RssResponse.RssResponseItem;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +17,8 @@ public class BreakingNewsServiceIntegrationTest {
     @Autowired
     private BreakingNewsService breakingNewsService;
 
+    Map<String, WordFrequency> wordsPerTitle = new HashMap<>();
+
     @Test
     public void should_create_feed_record() {
 
@@ -32,20 +33,32 @@ public class BreakingNewsServiceIntegrationTest {
     }
 
     @Test
-    public void should_add_new_word_and_increase_counter_for_existing_words() {
+    public void should_add_new_words_and_increase_counter_for_existing_words() {
 
         // GIVEN
-        Map<String, WordsFrequency> wordsPerTitle = new HashMap<>();
-        wordsPerTitle.put("test_1", new WordsFrequency("test_1", RssResponseItem.builder().build()));
-        wordsPerTitle.put("test_2", new WordsFrequency("test_2", RssResponseItem.builder().build()));
-        wordsPerTitle.put("test_3", new WordsFrequency("test_3", RssResponseItem.builder().build()));
+        givenWordsPerTitle(List.of("test_1", "test_2", "test_3"));
 
         // WHEN
-
         breakingNewsService.addNewWordsPerRssItem(wordsPerTitle, RssResponseItem.builder().build(), Sets.newSet("test_1", "test_4"));
 
         // THEN
         then(wordsPerTitle.size()).isEqualTo(4);
         then(wordsPerTitle.get("test_1").getCounter()).isEqualTo(2);
     }
+
+    @Test
+    public void should_find_rss_news_by_most_popular_words() {
+
+        // GIVEN
+
+        // WHEN
+
+        // THEN
+
+    }
+
+    private void givenWordsPerTitle(List<String> newWords) {
+        newWords.stream().forEach(word -> wordsPerTitle.put(word, new WordFrequency(word, RssResponseItem.builder().build())));
+    }
+
 }
