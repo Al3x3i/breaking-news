@@ -9,11 +9,15 @@ import org.junit.jupiter.api.Test;
 import org.mockito.internal.util.collections.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class BreakingNewsServiceIntegrationTest {
+
+    @Autowired
+    private AnalysisRepository analysisRepository;
 
     @Autowired
     private BreakingNewsService breakingNewsService;
@@ -21,6 +25,7 @@ public class BreakingNewsServiceIntegrationTest {
     Map<String, WordFrequency> wordsPerTitle = new HashMap<>();
 
     @Test
+    @Transactional
     public void should_create_feed_record() {
 
         // GIVEN
@@ -30,7 +35,9 @@ public class BreakingNewsServiceIntegrationTest {
         breakingNewsService.createNewsRecord(urls);
 
         // THEN
-        // TODO
+        then(analysisRepository.findAll()).isNotNull();
+        then(analysisRepository.findAll().size()).isEqualTo(1);
+        then(analysisRepository.findAll().get(0).getRssRequest().get(0)).isEqualTo(urls.get(0));
     }
 
     @Test

@@ -6,6 +6,7 @@ import com.breaking.news.model.WordFrequency;
 import com.breaking.news.rss.RssNewsLoader;
 import com.breaking.news.rss.RssResponse;
 import com.breaking.news.rss.RssResponse.RssResponseItem;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +24,9 @@ public class BreakingNewsService {
     @Autowired
     private AnalysisRepository analysisRepository;
 
+    @Autowired
+    private WordFrequencyRepository wordFrequencyRepository;
+
     public void createNewsRecord(List<String> urls) {
         log.info("Fetch the RSS feeds from urls: `{}` ", urls);
         List<RssResponse> titles = urls.stream().map(url -> RssNewsLoader.fetchTitlesFromXmlRss(url)).collect(Collectors.toList());
@@ -39,9 +43,8 @@ public class BreakingNewsService {
             }
         }
 
-        analysisRepository.save(Analysis.builder().rssRequest(urls).build());
-
-
+        Analysis analysis = Analysis.builder().rssRequest(urls).wordFrequencies(new ArrayList<>(wordsPerTitle.values())).build();
+        analysisRepository.save(analysis);
     }
 
     public void addNewWordsPerRssItem(Map<String, WordFrequency> wordsPerTitle, RssResponseItem rssResponseItem, Set<String> newWords) {
