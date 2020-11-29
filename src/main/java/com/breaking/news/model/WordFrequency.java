@@ -1,9 +1,11 @@
-package com.breaking.news;
+package com.breaking.news.model;
 
 import com.breaking.news.rss.RssResponse.RssResponseItem;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -16,7 +18,8 @@ import lombok.NoArgsConstructor;
 public class WordFrequency {
 
     @Id
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotNull
     private String word;

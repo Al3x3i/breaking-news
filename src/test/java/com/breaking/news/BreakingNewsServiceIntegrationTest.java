@@ -1,5 +1,6 @@
 package com.breaking.news;
 
+import com.breaking.news.model.WordFrequency;
 import com.breaking.news.rss.RssResponse.RssResponseItem;
 import java.util.HashMap;
 import java.util.List;

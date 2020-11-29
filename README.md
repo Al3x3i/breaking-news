@@ -5,6 +5,7 @@ Breaking news project.
     - Maven Project
     - Spring boot 2.4.0
     - Java 11
+    - H2 Database
     - Lombok
     - ROME library – For parsing feeds (https://github.com/rometools/rome)
     - OpenNLP library
@@ -31,3 +32,11 @@ Below are listed links which were used while implementation:
 - https://www.devglan.com/artificial-intelligence/open-nlp-pos-tagger-example
 - http://opennlp.sourceforge.net/models-1.5/
 - https://github.com/challengebiswa/opennlptest/blob/42a5cdec3a3a5a3255e457f7c2afe042e9cf78b3/src/main/java/nlp/intent/toolkit/POSTaggingExample.java
+
+## "Aggregate popular words tiles in code" VS "Query them in Database" ?
+
+// TODO
+
+### Hints:
+#### H2 database client
+- http://localhost:8080/h2-console

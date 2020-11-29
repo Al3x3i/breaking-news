@@ -1,6 +1,7 @@
 package com.breaking.news;
 
 import com.breaking.news.analyzer.OpenNLPAEnglishAnalyzer;
+import com.breaking.news.model.WordFrequency;
 import com.breaking.news.rss.RssNewsLoader;
 import com.breaking.news.rss.RssResponse;
 import com.breaking.news.rss.RssResponse.RssResponseItem;
