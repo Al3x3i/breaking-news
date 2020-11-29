@@ -1,6 +1,5 @@
 package com.breaking.news.rss;
 
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -15,9 +14,9 @@ public class RssNewsLoaderIntegrationTest {
         String url = "https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en";
 
         // WHEN
-        List allTitles = RssNewsLoader.fetchTitlesFromXmlRss(url);
+        RssResponse allTitles = RssNewsLoader.fetchTitlesFromXmlRss(url);
 
         // THEN
-        then(allTitles.size()).isNotZero();
+        then(allTitles.getRssResponseItems().size()).isNotZero();
     }
 }
