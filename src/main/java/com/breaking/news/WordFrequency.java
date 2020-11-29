@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,7 @@ public class WordFrequency {
     private Integer counter;
 
     @NotNull
+    @Transient
     private List<RssResponseItem> rssResponseItems;
 
     public WordFrequency(String word, RssResponseItem rssResponseItem) {
