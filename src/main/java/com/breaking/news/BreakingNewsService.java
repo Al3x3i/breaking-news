@@ -1,6 +1,7 @@
 package com.breaking.news;
 
 import com.breaking.news.analyzer.OpenNLPAEnglishAnalyzer;
+import com.breaking.news.model.Analysis;
 import com.breaking.news.model.WordFrequency;
 import com.breaking.news.rss.RssNewsLoader;
 import com.breaking.news.rss.RssResponse;
@@ -12,11 +13,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 public class BreakingNewsService {
+
+    @Autowired
+    private AnalysisRepository analysisRepository;
 
     public void createNewsRecord(List<String> urls) {
         log.info("Fetch the RSS feeds from urls: `{}` ", urls);
@@ -33,6 +38,10 @@ public class BreakingNewsService {
                 addNewWordsPerRssItem(wordsPerTitle, rssResponseItem, newUniqueWords);
             }
         }
+
+        analysisRepository.save(Analysis.builder().rssRequest(urls).build());
+
+
     }
 
     public void addNewWordsPerRssItem(Map<String, WordFrequency> wordsPerTitle, RssResponseItem rssResponseItem, Set<String> newWords) {
