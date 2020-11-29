@@ -29,7 +29,7 @@ public class WordFrequency {
     @NotNull
     private Integer counter;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @Setter
     private Analysis analysis;
 
