@@ -6,7 +6,6 @@ import com.breaking.news.model.WordFrequency;
 import com.breaking.news.rss.RssNewsLoader;
 import com.breaking.news.rss.RssResponse;
 import com.breaking.news.rss.RssResponse.RssResponseItem;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,11 +26,12 @@ public class BreakingNewsService {
     @Autowired
     private WordFrequencyRepository wordFrequencyRepository;
 
-    public void createNewsRecord(List<String> urls) {
+    public Long createNewsRecord(List<String> urls) {
         log.info("Fetch the RSS feeds from urls: `{}` ", urls);
         List<RssResponse> titles = urls.stream().map(url -> RssNewsLoader.fetchTitlesFromXmlRss(url)).collect(Collectors.toList());
 
-        // analyze the RSS feed
+        Analysis analysis = Analysis.builder().rssRequest(urls).build();
+
         Map<String, WordFrequency> wordsPerTitle = new HashMap<>();
 
         for (RssResponse item : titles) {
@@ -39,15 +39,14 @@ public class BreakingNewsService {
             for (RssResponseItem rssResponseItem : item.getRssResponseItems()) {
                 HashSet<String> newUniqueWords = getUniqueNounsPerTitle(rssResponseItem);
 
-                addNewWordsPerRssItem(wordsPerTitle, rssResponseItem, newUniqueWords);
+                addNewWordsPerRssItem(wordsPerTitle, rssResponseItem, newUniqueWords, analysis);
             }
         }
-
-        Analysis analysis = Analysis.builder().rssRequest(urls).wordFrequencies(new ArrayList<>(wordsPerTitle.values())).build();
-        analysisRepository.save(analysis);
+        analysisRepository.saveAndFlush(analysis);
+        return analysis.getId();
     }
 
-    public void addNewWordsPerRssItem(Map<String, WordFrequency> wordsPerTitle, RssResponseItem rssResponseItem, Set<String> newWords) {
+    public void addNewWordsPerRssItem(Map<String, WordFrequency> wordsPerTitle, RssResponseItem rssResponseItem, Set<String> newWords, Analysis analysis) {
 
         for (String word : newWords) {
 
@@ -56,9 +55,14 @@ public class BreakingNewsService {
                 wordsFrequency.incrementCounter();
                 wordsFrequency.getRssResponseItems().add(rssResponseItem);
             } else {
-                wordsPerTitle.put(word, new WordFrequency(word, rssResponseItem));
+                wordsPerTitle.put(word, new WordFrequency(word, rssResponseItem, analysis));
             }
         }
+    }
+
+    public void findHotNewsById(Long id) {
+        Object[] ss = wordFrequencyRepository.findByAnalysisId(id);
+        String pp = "";
     }
 
     private HashSet<String> getUniqueNounsPerTitle(RssResponseItem rssResponseItem) {

@@ -9,4 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface WordFrequencyRepository extends JpaRepository<WordFrequency, Long> {
 
+    public Object[] findByAnalysisId(Long id);
+
 }

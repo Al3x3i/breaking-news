@@ -30,7 +30,7 @@ public class Analysis {
     @ElementCollection
     private List<String> rssRequest;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "analysis")
     private List<WordFrequency> wordFrequencies;
 
     @Column(nullable = false, updatable = false)
