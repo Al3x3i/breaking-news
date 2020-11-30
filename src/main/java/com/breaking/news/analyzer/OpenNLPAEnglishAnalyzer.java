@@ -73,7 +73,6 @@ public class OpenNLPAEnglishAnalyzer {
         List<String> validNouns = new ArrayList<>();
         for (int index = 0; index < tokenizerLine.length; index++) {
 
-            String s = tokenizerLine[index];
             if (tags[index].equals("NN")) {
                 validNouns.add(tokenizerLine[index]);
             }
