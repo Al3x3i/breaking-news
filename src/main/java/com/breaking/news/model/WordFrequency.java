@@ -1,6 +1,5 @@
 package com.breaking.news.model;
 
-import com.breaking.news.rss.RssResponse.RssResponseItem;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CollectionTable;
@@ -36,11 +35,11 @@ public class WordFrequency {
     private Analysis analysis;
 
     @NotNull
-    @ElementCollection(targetClass = RssResponseItem.class)
+    @ElementCollection(targetClass = RssItem.class)
     @CollectionTable(name = "RSS_RESPONSE_ITEM", joinColumns = @JoinColumn(name = "WORD_FREQUENCY_ID"))
-    private List<RssResponseItem> rssResponseItems;
+    private List<RssItem> rssResponseItems;
 
-    public WordFrequency(String word, RssResponseItem rssResponseItem, Analysis analysis) {
+    public WordFrequency(String word, RssItem rssResponseItem, Analysis analysis) {
         this.word = word;
         this.counter = 1;
         this.rssResponseItems = new ArrayList<>();

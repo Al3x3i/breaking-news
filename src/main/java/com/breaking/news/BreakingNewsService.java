@@ -2,10 +2,10 @@ package com.breaking.news;
 
 import com.breaking.news.analyzer.OpenNLPAEnglishAnalyzer;
 import com.breaking.news.model.Analysis;
+import com.breaking.news.model.RssItem;
 import com.breaking.news.model.WordFrequency;
 import com.breaking.news.rss.RssNewsLoader;
 import com.breaking.news.rss.RssResponse;
-import com.breaking.news.rss.RssResponse.RssResponseItem;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,17 +40,19 @@ public class BreakingNewsService {
 
         for (RssResponse item : titles) {
 
-            for (RssResponseItem rssResponseItem : item.getRssResponseItems()) {
+            for (RssItem rssResponseItem : item.getRssResponseItems()) {
                 HashSet<String> newUniqueWords = getUniqueNounsPerTitle(rssResponseItem);
 
                 addNewWordsPerRssItem(wordsPerTitle, rssResponseItem, newUniqueWords, analysis);
             }
         }
+
         analysisRepository.saveAndFlush(analysis);
+        wordFrequencyRepository.saveAll(wordsPerTitle.values().stream().collect(Collectors.toList()));
         return analysis.getId();
     }
 
-    public void addNewWordsPerRssItem(Map<String, WordFrequency> wordsPerTitle, RssResponseItem rssResponseItem, Set<String> newWords, Analysis analysis) {
+    public void addNewWordsPerRssItem(Map<String, WordFrequency> wordsPerTitle, RssItem rssResponseItem, Set<String> newWords, Analysis analysis) {
 
         for (String word : newWords) {
 
@@ -68,7 +70,7 @@ public class BreakingNewsService {
         return wordFrequencyRepository.getWordFrequenciesByAnalysisId(id, MAX_TOP_NEWS);
     }
 
-    private HashSet<String> getUniqueNounsPerTitle(RssResponseItem rssResponseItem) {
+    private HashSet<String> getUniqueNounsPerTitle(RssItem rssResponseItem) {
         List<String> formattedTitleWords = OpenNLPAEnglishAnalyzer.getInstance().getNounsFromText(rssResponseItem.getTile());
         return new HashSet<>(formattedTitleWords);
     }

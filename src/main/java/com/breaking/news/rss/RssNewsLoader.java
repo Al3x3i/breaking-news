@@ -1,6 +1,6 @@
 package com.breaking.news.rss;
 
-import com.breaking.news.rss.RssResponse.RssResponseItem;
+import com.breaking.news.model.RssItem;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
@@ -19,7 +19,7 @@ public class RssNewsLoader {
                 System.out.println(feed.getTitle());
                 for (SyndEntry entry : feed.getEntries()) {
                     response.getRssResponseItems().add(
-                            RssResponseItem.builder()
+                            RssItem.builder()
                                     .tile(entry.getTitle())
                                     .link(entry.getLink())
                                     .build());
