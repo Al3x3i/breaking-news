@@ -21,11 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class BreakingNewsService {
 
+    private final static Integer MAX_TOP_NEWS = 3;
     @Autowired
     private AnalysisRepository analysisRepository;
-
-    private final static Integer MAX_TOP_NEWS = 3;
-
     @Autowired
     private WordFrequencyRepository wordFrequencyRepository;
 

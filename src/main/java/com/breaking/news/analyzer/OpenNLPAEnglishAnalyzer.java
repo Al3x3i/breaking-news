@@ -30,6 +30,12 @@ public class OpenNLPAEnglishAnalyzer {
         return instance;
     }
 
+    private static POSModel getPosModel() throws IOException {
+        File f = new File("en-pos-maxent.bin");
+        InputStream modelIn = new FileInputStream(f);
+        return new POSModel(modelIn);
+    }
+
     public List<String> getNounsFromText(String text) {
 
         try {
@@ -94,11 +100,5 @@ public class OpenNLPAEnglishAnalyzer {
         }
 
         return words;
-    }
-
-    private static POSModel getPosModel() throws IOException {
-        File f = new File("en-pos-maxent.bin");
-        InputStream modelIn = new FileInputStream(f);
-        return new POSModel(modelIn);
     }
 }

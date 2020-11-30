@@ -1,8 +1,8 @@
 package com.breaking.news;
 
 import com.breaking.news.model.Analysis;
+import com.breaking.news.model.RssItem;
 import com.breaking.news.model.WordFrequency;
-import com.breaking.news.rss.RssResponse.RssResponseItem;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +55,7 @@ public class BreakingNewsServiceIntegrationTest {
         givenWordsPerTitle(List.of("test_1", "test_2", "test_3"));
 
         // WHEN
-        breakingNewsService.addNewWordsPerRssItem(wordsPerTitle, RssResponseItem.builder().build(), Sets.newSet("test_1", "test_4"), null);
+        breakingNewsService.addNewWordsPerRssItem(wordsPerTitle, RssItem.builder().build(), Sets.newSet("test_1", "test_4"), null);
 
         // THEN
         then(wordsPerTitle.size()).isEqualTo(4);
@@ -81,22 +81,22 @@ public class BreakingNewsServiceIntegrationTest {
     }
 
     private void givenWordsPerTitle(List<String> newWords) {
-        newWords.stream().forEach(word -> wordsPerTitle.put(word, new WordFrequency(word, new RssResponseItem(), new Analysis())));
+        newWords.stream().forEach(word -> wordsPerTitle.put(word, new WordFrequency(word, new RssItem(), new Analysis())));
     }
 
     private void givenPersistedAnalyses() {
         Analysis analysis = new Analysis();
         analysis.setRssRequest(List.of("google.rss"));
 
-        var wordFrequencyFirst = new WordFrequency("first", new RssResponseItem(), analysis);
+        var wordFrequencyFirst = new WordFrequency("first", new RssItem(), analysis);
 
-        var wordFrequencySecond = new WordFrequency("second", new RssResponseItem(), analysis);
+        var wordFrequencySecond = new WordFrequency("second", new RssItem(), analysis);
         IntStream.range(1, 5).forEach(index -> wordFrequencySecond.incrementCounter());
 
-        var wordFrequencyThird = new WordFrequency("third", new RssResponseItem(), analysis);
+        var wordFrequencyThird = new WordFrequency("third", new RssItem(), analysis);
         IntStream.range(1, 10).forEach(index -> wordFrequencyThird.incrementCounter());
 
-        var wordFrequencyFourth = new WordFrequency("fourth", new RssResponseItem(), analysis);
+        var wordFrequencyFourth = new WordFrequency("fourth", new RssItem(), analysis);
         IntStream.range(1, 3).forEach(index -> wordFrequencyFourth.incrementCounter());
 
         analysis.setWordFrequencies(List.of(wordFrequencyFirst, wordFrequencySecond, wordFrequencyThird, wordFrequencyFourth));

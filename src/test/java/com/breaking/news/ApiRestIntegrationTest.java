@@ -1,8 +1,8 @@
 package com.breaking.news;
 
 import com.breaking.news.model.Analysis;
+import com.breaking.news.model.RssItem;
 import com.breaking.news.model.WordFrequency;
-import com.breaking.news.rss.RssResponse.RssResponseItem;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import java.util.List;
@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class ApiRestIntegrationTest {
 
@@ -109,15 +109,15 @@ public class ApiRestIntegrationTest {
         Analysis analysis = new Analysis();
         analysis.setRssRequest(List.of("google.rss"));
 
-        var wordFrequencyFirst = new WordFrequency("first", new RssResponseItem("news", "www"), analysis);
+        var wordFrequencyFirst = new WordFrequency("first", new RssItem("news", "www"), analysis);
 
-        var wordFrequencySecond = new WordFrequency("second", new RssResponseItem("news", "www"), analysis);
+        var wordFrequencySecond = new WordFrequency("second", new RssItem("news", "www"), analysis);
         IntStream.range(1, 5).forEach(index -> wordFrequencySecond.incrementCounter());
 
-        var wordFrequencyThird = new WordFrequency("third", new RssResponseItem("news", "www"), analysis);
+        var wordFrequencyThird = new WordFrequency("third", new RssItem("news", "www"), analysis);
         IntStream.range(1, 10).forEach(index -> wordFrequencyThird.incrementCounter());
 
-        var wordFrequencyFourth = new WordFrequency("fourth", new RssResponseItem("news", "www"), analysis);
+        var wordFrequencyFourth = new WordFrequency("fourth", new RssItem("news", "www"), analysis);
         IntStream.range(1, 3).forEach(index -> wordFrequencyFourth.incrementCounter());
 
         analysis.setWordFrequencies(List.of(wordFrequencyFirst, wordFrequencySecond, wordFrequencyThird, wordFrequencyFourth));
