@@ -2,8 +2,10 @@ package com.breaking.news.rss;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +24,7 @@ public class RssResponse {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    @Embeddable
     public static class RssResponseItem {
         private String tile;
         private String link;

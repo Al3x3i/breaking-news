@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -23,9 +24,12 @@ public class BreakingNewsService {
     @Autowired
     private AnalysisRepository analysisRepository;
 
+    private final static Integer MAX_TOP_NEWS = 3;
+
     @Autowired
     private WordFrequencyRepository wordFrequencyRepository;
 
+    @Transactional
     public Long createNewsRecord(List<String> urls) {
         log.info("Fetch the RSS feeds from urls: `{}` ", urls);
         List<RssResponse> titles = urls.stream().map(url -> RssNewsLoader.fetchTitlesFromXmlRss(url)).collect(Collectors.toList());
@@ -60,9 +64,8 @@ public class BreakingNewsService {
         }
     }
 
-    public void findHotNewsById(Long id) {
-        Object[] ss = wordFrequencyRepository.findByAnalysisId(id);
-        String pp = "";
+    public List<WordFrequency> findHotNewsById(Long id) {
+        return wordFrequencyRepository.getWordFrequenciesByAnalysisId(id, MAX_TOP_NEWS);
     }
 
     private HashSet<String> getUniqueNounsPerTitle(RssResponseItem rssResponseItem) {

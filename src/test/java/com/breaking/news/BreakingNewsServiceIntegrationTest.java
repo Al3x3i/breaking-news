@@ -7,16 +7,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
-import org.springframework.transaction.annotation.Transactional;
+import javax.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.util.collections.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class BreakingNewsServiceIntegrationTest {
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Autowired
     private AnalysisRepository analysisRepository;
@@ -59,16 +63,21 @@ public class BreakingNewsServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void should_find_rss_news_by_most_popular_words() {
 
         // GIVEN
         givenPersistedAnalyses();
 
         // WHEN
-        breakingNewsService.findHotNewsById(persistedAnalysisId);
+        List<WordFrequency> wordFrequencies = breakingNewsService.findHotNewsById(persistedAnalysisId);
 
         // THEN
-
+        then(wordFrequencies).isNotNull();
+        then(wordFrequencies.size()).isEqualTo(3);
+        then(wordFrequencies.get(0).getCounter()).isEqualTo(10);
+        then(wordFrequencies.get(1).getCounter()).isEqualTo(5);
+        then(wordFrequencies.get(2).getCounter()).isEqualTo(3);
     }
 
     private void givenWordsPerTitle(List<String> newWords) {
@@ -80,20 +89,20 @@ public class BreakingNewsServiceIntegrationTest {
         analysis.setRssRequest(List.of("google.rss"));
 
         var wordFrequencyFirst = new WordFrequency("first", new RssResponseItem(), analysis);
-        IntStream.range(0, 1).forEach(index -> wordFrequencyFirst.incrementCounter());
 
         var wordFrequencySecond = new WordFrequency("second", new RssResponseItem(), analysis);
-        IntStream.range(0, 5).forEach(index -> wordFrequencyFirst.incrementCounter());
+        IntStream.range(1, 5).forEach(index -> wordFrequencySecond.incrementCounter());
 
         var wordFrequencyThird = new WordFrequency("third", new RssResponseItem(), analysis);
-        IntStream.range(0, 10).forEach(index -> wordFrequencyFirst.incrementCounter());
+        IntStream.range(1, 10).forEach(index -> wordFrequencyThird.incrementCounter());
 
         var wordFrequencyFourth = new WordFrequency("fourth", new RssResponseItem(), analysis);
-        IntStream.range(0, 3).forEach(index -> wordFrequencyFirst.incrementCounter());
+        IntStream.range(1, 3).forEach(index -> wordFrequencyFourth.incrementCounter());
 
         analysis.setWordFrequencies(List.of(wordFrequencyFirst, wordFrequencySecond, wordFrequencyThird, wordFrequencyFourth));
 
         analysisRepository.saveAndFlush(analysis);
+        persistedAnalysisId = analysis.getId();
     }
 
 }

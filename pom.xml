@@ -71,6 +71,13 @@
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <!-- HATEOS-->
+        <dependency>
+            <groupId>org.springframework.hateoas</groupId>
+            <artifactId>spring-hateoas</artifactId>
+            <version>1.0.0.RELEASE</version>
+        </dependency>
+
 
     </dependencies>
 
