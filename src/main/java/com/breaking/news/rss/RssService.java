@@ -50,7 +50,7 @@ public class RssService {
     private void processRssResponsesAsynchronously(List<RssResponse> responseItems, List<Pair<RssItem, HashSet<String>>> titleWordsPerRssItem) {
         Collection<Callable<List<Pair<RssItem, HashSet<String>>>>> callables = new ArrayList<>();
 
-        responseItems.forEach(response -> callables.add(() -> getAllTitles(response)));
+        responseItems.forEach(response -> callables.add(() -> getRssItemWords(response)));
 
         try {
             List<Future<List<Pair<RssItem, HashSet<String>>>>> rssItemsFutures = executorService.invokeAll(callables);
@@ -77,15 +77,15 @@ public class RssService {
         }
     }
 
-    private static List<Pair<RssItem, HashSet<String>>> getAllTitles(RssResponse item) {
-        List<Pair<RssItem, HashSet<String>>> allWords = new ArrayList<>();
+    private static List<Pair<RssItem, HashSet<String>>> getRssItemWords(RssResponse item) {
+        List<Pair<RssItem, HashSet<String>>> rssItemWords = new ArrayList<>();
         for (RssItem rssResponseItem : item.getRssResponseItems()) {
-            List words = OpenNLPAEnglishAnalyzer.getNounsFromText(rssResponseItem.getTile());
+            var words = OpenNLPAEnglishAnalyzer.getNounsFromText(rssResponseItem.getTile());
 
-            Pair<RssItem, HashSet<String>> pair = Pair.of(rssResponseItem, getUniqueNounsPerTitle(words));
-            allWords.add(pair);
+            Pair pair = Pair.of(rssResponseItem, getUniqueNounsPerTitle(words));
+            rssItemWords.add(pair);
         }
-        return allWords;
+        return rssItemWords;
     }
 
     private static HashSet<String> getUniqueNounsPerTitle(List<String> words) {
