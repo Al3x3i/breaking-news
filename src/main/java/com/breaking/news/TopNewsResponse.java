@@ -16,7 +16,7 @@ public class TopNewsResponse extends RepresentationModel<TopNewsResponse> {
     public static class TopNews {
         private String word;
         private Integer counter;
-        private List<RssItem> rssItems = new ArrayList<>();
+        private List<RssItem> rssItems;
     }
 
     @Data
