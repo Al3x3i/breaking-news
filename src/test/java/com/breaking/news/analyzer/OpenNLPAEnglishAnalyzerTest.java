@@ -19,7 +19,7 @@ public class OpenNLPAEnglishAnalyzerTest {
         String message = "Ex-CIA Head John Brennan Calls Ted Cruz 'Simple-Minded' in Twitter Row Over Iran Killing - Newsweek";
 
         // WHEN
-        List<String> result = OpenNLPAEnglishAnalyzer.getInstance().getNounsFromText(message);
+        List<String> result = OpenNLPAEnglishAnalyzer.getNounsFromText(message);
 
         // THEN
         then(String.join(" ", result)).isEqualTo("excia head john brennan call cruz simplemind twitter row kill newsweek");

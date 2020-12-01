@@ -28,8 +28,6 @@ public class BreakingNewsServiceIntegrationTest {
     @Autowired
     private BreakingNewsService breakingNewsService;
 
-    private Map<String, WordFrequency> wordsPerTitle = new HashMap<>();
-
     private Long persistedAnalysisId;
 
     @Test
@@ -46,20 +44,6 @@ public class BreakingNewsServiceIntegrationTest {
         then(analysisRepository.findAll()).isNotNull();
         then(analysisRepository.findAll().size()).isEqualTo(1);
         then(analysisRepository.findAll().get(0).getRssRequest().get(0)).isEqualTo(urls.get(0));
-    }
-
-    @Test
-    public void should_add_new_words_and_increase_counter_for_existing_words() {
-
-        // GIVEN
-        givenWordsPerTitle(List.of("test_1", "test_2", "test_3"));
-
-        // WHEN
-        breakingNewsService.addNewWordsPerRssItem(wordsPerTitle, RssItem.builder().build(), Sets.newSet("test_1", "test_4"), null);
-
-        // THEN
-        then(wordsPerTitle.size()).isEqualTo(4);
-        then(wordsPerTitle.get("test_1").getCounter()).isEqualTo(2);
     }
 
     @Test
@@ -80,9 +64,6 @@ public class BreakingNewsServiceIntegrationTest {
         then(wordFrequencies.get(2).getCounter()).isEqualTo(3);
     }
 
-    private void givenWordsPerTitle(List<String> newWords) {
-        newWords.stream().forEach(word -> wordsPerTitle.put(word, new WordFrequency(word, new RssItem(), new Analysis())));
-    }
 
     private void givenPersistedAnalyses() {
         Analysis analysis = new Analysis();

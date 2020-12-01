@@ -21,22 +21,13 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OpenNLPAEnglishAnalyzer {
 
-    private static OpenNLPAEnglishAnalyzer instance;
-
-    public static OpenNLPAEnglishAnalyzer getInstance() {
-        if (instance == null) {
-            instance = new OpenNLPAEnglishAnalyzer();
-        }
-        return instance;
-    }
-
     private static POSModel getPosModel() throws IOException {
         File f = new File("en-pos-maxent.bin");
         InputStream modelIn = new FileInputStream(f);
         return new POSModel(modelIn);
     }
 
-    public List<String> getNounsFromText(String text) {
+    public static List<String> getNounsFromText(String text) {
 
         try {
             text = replaceAllSpecialCharacterByEmptyCharacter(text);
@@ -58,7 +49,7 @@ public class OpenNLPAEnglishAnalyzer {
         return new ArrayList<>();
     }
 
-    private String replaceAllSpecialCharacterByEmptyCharacter(String text) {
+    private static String replaceAllSpecialCharacterByEmptyCharacter(String text) {
         //^ - Match any character that is not in the set.
         //w - (word)  Matches any word character (alphanumeric & underscore).
         //s - Matches any whitespace character (spaces, tabs, line breaks).
@@ -66,7 +57,7 @@ public class OpenNLPAEnglishAnalyzer {
         return text.replaceAll("[^\\w\\s]", "");
     }
 
-    private List<String> extractNounsFromText(POSTaggerME tagger, List<String> allWords) {
+    private static List<String> extractNounsFromText(POSTaggerME tagger, List<String> allWords) {
         String[] tokenizerLine = allWords.toArray(String[]::new);
         String[] tags = tagger.tag(tokenizerLine);
 
@@ -80,7 +71,7 @@ public class OpenNLPAEnglishAnalyzer {
         return validNouns;
     }
 
-    private List<String> analyzeText(Analyzer analyzer, TokenStream tokenStream) throws IOException {
+    private static List<String> analyzeText(Analyzer analyzer, TokenStream tokenStream) throws IOException {
         List<String> words = new ArrayList<>();
         CharTermAttribute term = tokenStream.addAttribute(CharTermAttribute.class);
         try {
