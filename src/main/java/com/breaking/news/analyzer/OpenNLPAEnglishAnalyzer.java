@@ -21,12 +21,6 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OpenNLPAEnglishAnalyzer {
 
-    private static POSModel getPosModel() throws IOException {
-        File f = new File("en-pos-maxent.bin");
-        InputStream modelIn = new FileInputStream(f);
-        return new POSModel(modelIn);
-    }
-
     public static List<String> getNounsFromText(String text) {
 
         try {
@@ -47,6 +41,12 @@ public class OpenNLPAEnglishAnalyzer {
             log.error("Error occurred while analyzing the text `{}`. Error message: `{}`", text, ex.getMessage());
         }
         return new ArrayList<>();
+    }
+
+    private static POSModel getPosModel() throws IOException {
+        File f = new File("en-pos-maxent.bin");
+        InputStream modelIn = new FileInputStream(f);
+        return new POSModel(modelIn);
     }
 
     private static String replaceAllSpecialCharacterByEmptyCharacter(String text) {

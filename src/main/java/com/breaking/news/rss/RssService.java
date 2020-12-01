@@ -14,7 +14,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class RssService {
 
-    public Map<String, WordFrequency> analyseRssResponseItems(Analysis analysis, List<RssResponse> titles) {
+    public static void addNewWordsPerRssItem(Map<String, WordFrequency> wordsPerTitle, RssItem rssResponseItem, Set<String> newWords, Analysis analysis) {
+
+        for (String word : newWords) {
+
+            if (wordsPerTitle.containsKey(word)) {
+                WordFrequency wordsFrequency = wordsPerTitle.get(word);
+                wordsFrequency.incrementCounter();
+                wordsFrequency.getRssResponseItems().add(rssResponseItem);
+            } else {
+                wordsPerTitle.put(word, new WordFrequency(word, rssResponseItem, analysis));
+            }
+        }
+    }
+
+    public static Map<String, WordFrequency> analyseRssResponseItems(Analysis analysis, List<RssResponse> titles) {
 
         Map<String, WordFrequency> wordsPerTitle = new HashMap<>();
         for (RssResponse item : titles) {
@@ -28,22 +42,8 @@ public class RssService {
         return wordsPerTitle;
     }
 
-    private HashSet<String> getUniqueNounsPerTitle(RssItem rssResponseItem) {
+    private static HashSet<String> getUniqueNounsPerTitle(RssItem rssResponseItem) {
         List<String> formattedTitleWords = OpenNLPAEnglishAnalyzer.getNounsFromText(rssResponseItem.getTile());
         return new HashSet<>(formattedTitleWords);
-    }
-
-    public void addNewWordsPerRssItem(Map<String, WordFrequency> wordsPerTitle, RssItem rssResponseItem, Set<String> newWords, Analysis analysis) {
-
-        for (String word : newWords) {
-
-            if (wordsPerTitle.containsKey(word)) {
-                WordFrequency wordsFrequency = wordsPerTitle.get(word);
-                wordsFrequency.incrementCounter();
-                wordsFrequency.getRssResponseItems().add(rssResponseItem);
-            } else {
-                wordsPerTitle.put(word, new WordFrequency(word, rssResponseItem, analysis));
-            }
-        }
     }
 }

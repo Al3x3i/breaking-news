@@ -18,10 +18,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class BreakingNewsService {
 
     private final static Integer MAX_TOP_NEWS = 3;
+
     @Autowired
     private AnalysisRepository analysisRepository;
+
     @Autowired
     private WordFrequencyRepository wordFrequencyRepository;
+
     @Autowired
     private RssService rssService;
 
