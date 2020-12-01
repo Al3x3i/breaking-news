@@ -14,12 +14,13 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @Slf4j
@@ -30,7 +31,7 @@ public class RssService {
     private ExecutorService executorService;
 
     public static List<RssResponse> loadRssResponses(List<String> urls) {
-        return urls.stream().map(url -> RssNewsLoader.fetchTitlesFromXmlRss(url)).collect(Collectors.toList());
+        return urls.stream().map(RssNewsLoader::fetchTitlesFromXmlRss).collect(toList());
     }
 
     public Map<String, WordFrequency> analyseRssResponseItems(Analysis analysis, List<RssResponse> responseItems) {
@@ -41,10 +42,24 @@ public class RssService {
         processRssResponsesAsynchronously(responseItems, titleWordsPerRssItem);
 
         for (Pair<RssItem, HashSet<String>> rssItemListPair : titleWordsPerRssItem) {
-            addNewWordsPerRssItem(wordsPerTitle, rssItemListPair.getFirst(), rssItemListPair.getSecond(), analysis);
+            addAndRankNewWordsPerRssItem(wordsPerTitle, rssItemListPair.getFirst(), rssItemListPair.getSecond(), analysis);
         }
 
         return wordsPerTitle;
+    }
+
+    public static void addAndRankNewWordsPerRssItem(Map<String, WordFrequency> wordsPerTitle, RssItem rssResponseItem, Set<String> newWords, Analysis analysis) {
+
+        for (String word : newWords) {
+
+            if (wordsPerTitle.containsKey(word)) {
+                WordFrequency wordsFrequency = wordsPerTitle.get(word);
+                wordsFrequency.incrementCounter();
+                wordsFrequency.getRssResponseItems().add(rssResponseItem);
+            } else {
+                wordsPerTitle.put(word, new WordFrequency(word, rssResponseItem, analysis));
+            }
+        }
     }
 
     private void processRssResponsesAsynchronously(List<RssResponse> responseItems, List<Pair<RssItem, HashSet<String>>> titleWordsPerRssItem) {
@@ -63,32 +78,18 @@ public class RssService {
         }
     }
 
-    public static void addNewWordsPerRssItem(Map<String, WordFrequency> wordsPerTitle, RssItem rssResponseItem, Set<String> newWords, Analysis analysis) {
-
-        for (String word : newWords) {
-
-            if (wordsPerTitle.containsKey(word)) {
-                WordFrequency wordsFrequency = wordsPerTitle.get(word);
-                wordsFrequency.incrementCounter();
-                wordsFrequency.getRssResponseItems().add(rssResponseItem);
-            } else {
-                wordsPerTitle.put(word, new WordFrequency(word, rssResponseItem, analysis));
-            }
-        }
-    }
-
     private static List<Pair<RssItem, HashSet<String>>> getRssItemWords(RssResponse item) {
         List<Pair<RssItem, HashSet<String>>> rssItemWords = new ArrayList<>();
         for (RssItem rssResponseItem : item.getRssResponseItems()) {
             var words = OpenNLPAEnglishAnalyzer.getNounsFromText(rssResponseItem.getTile());
 
-            Pair pair = Pair.of(rssResponseItem, getUniqueNounsPerTitle(words));
+            Pair pair = Pair.of(rssResponseItem, getUniqueWords(words));
             rssItemWords.add(pair);
         }
         return rssItemWords;
     }
 
-    private static HashSet<String> getUniqueNounsPerTitle(List<String> words) {
+    private static HashSet<String> getUniqueWords(List<String> words) {
         return new HashSet<>(words);
     }
 }

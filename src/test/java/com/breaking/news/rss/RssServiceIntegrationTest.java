@@ -11,12 +11,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.util.collections.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.BDDAssertions.then;
 
 @SpringBootTest
@@ -39,7 +39,6 @@ public class RssServiceIntegrationTest {
 
         // THEN
         thenVerifyWordsOrder(wordsFrequency);
-
     }
 
     @Test
@@ -49,7 +48,7 @@ public class RssServiceIntegrationTest {
         givenWordsPerTitle(List.of("test_1", "test_2", "test_3"));
 
         // WHEN
-        RssService.addNewWordsPerRssItem(wordsPerTitle, RssItem.builder().build(), Sets.newSet("test_1", "test_4"), null);
+        RssService.addAndRankNewWordsPerRssItem(wordsPerTitle, RssItem.builder().build(), Sets.newSet("test_1", "test_4"), null);
 
         // THEN
         then(wordsPerTitle.size()).isEqualTo(4);
@@ -59,7 +58,6 @@ public class RssServiceIntegrationTest {
     private void givenWordsPerTitle(List<String> newWords) {
         newWords.stream().forEach(word -> wordsPerTitle.put(word, new WordFrequency(word, new RssItem(), new Analysis())));
     }
-
 
     private void thenVerifyWordsOrder(Map<String, WordFrequency> wordsFrequency) {
         Map<String, WordFrequency> orderedWords = getOrderedWordsByCounter(wordsFrequency);
@@ -90,7 +88,7 @@ public class RssServiceIntegrationTest {
         Map<String, WordFrequency> result = wordsFrequency.entrySet()
                 .stream()
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue(Comparator.comparing(WordFrequency::getCounter))))
-                .collect(Collectors.toMap(
+                .collect(toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
