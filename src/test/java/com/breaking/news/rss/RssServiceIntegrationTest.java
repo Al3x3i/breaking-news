@@ -89,7 +89,7 @@ public class RssServiceIntegrationTest {
 
         Map<String, WordFrequency> result = wordsFrequency.entrySet()
                 .stream()
-                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue(Comparator.comparing(item -> item.getCounter()))))
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue(Comparator.comparing(WordFrequency::getCounter))))
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,

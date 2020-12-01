@@ -49,9 +49,8 @@ public class RssService {
 
     private void processRssResponsesAsynchronously(List<RssResponse> responseItems, List<Pair<RssItem, HashSet<String>>> titleWordsPerRssItem) {
         Collection<Callable<List<Pair<RssItem, HashSet<String>>>>> callables = new ArrayList<>();
-        for (RssResponse item : responseItems) {
-            callables.add(() -> getAllTitles(item));
-        }
+
+        responseItems.forEach(response -> callables.add(() -> getAllTitles(response)));
 
         try {
             List<Future<List<Pair<RssItem, HashSet<String>>>>> rssItemsFutures = executorService.invokeAll(callables);

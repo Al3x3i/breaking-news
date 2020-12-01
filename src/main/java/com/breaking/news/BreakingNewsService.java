@@ -4,9 +4,9 @@ import com.breaking.news.model.Analysis;
 import com.breaking.news.model.WordFrequency;
 import com.breaking.news.rss.RssResponse;
 import com.breaking.news.rss.RssService;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ public class BreakingNewsService {
         Map<String, WordFrequency> wordsPerTitle = rssService.analyseRssResponseItems(analysis, rssResponses);
 
         analysisRepository.saveAndFlush(analysis);
-        wordFrequencyRepository.saveAll(wordsPerTitle.values().stream().collect(Collectors.toList()));
+        wordFrequencyRepository.saveAll(new ArrayList<>(wordsPerTitle.values()));
 
         log.info("Finished fetching the RSS feeds from urls: `{}` ", urls);
         return analysis.getId();
