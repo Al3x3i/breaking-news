@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RssNewsLoader {
 
-    public static RssResponse fetchTitlesFromXmlRss(String url) {
+    static RssResponse fetchTitlesFromXmlRss(String url) {
         RssResponse response = new RssResponse(url);
         try {
             try (XmlReader reader = new XmlReader(new URL(url))) {
@@ -27,6 +27,7 @@ public class RssNewsLoader {
             }
         } catch (Exception ex) {
             log.error("Error occurred while fetching titles from url: `{}`. Error message", url, ex.getMessage());
+            throw new RuntimeException(ex);
         }
         return response;
     }

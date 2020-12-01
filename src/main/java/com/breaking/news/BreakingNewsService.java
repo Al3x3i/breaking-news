@@ -2,7 +2,6 @@ package com.breaking.news;
 
 import com.breaking.news.model.Analysis;
 import com.breaking.news.model.WordFrequency;
-import com.breaking.news.rss.RssNewsLoader;
 import com.breaking.news.rss.RssResponse;
 import com.breaking.news.rss.RssService;
 import java.util.List;
@@ -31,11 +30,11 @@ public class BreakingNewsService {
     @Transactional
     public Long createNewsRecord(List<String> urls) {
         log.info("Start fetching the RSS feeds from urls: `{}` ", urls);
-        List<RssResponse> titles = urls.stream().map(url -> RssNewsLoader.fetchTitlesFromXmlRss(url)).collect(Collectors.toList());
+        List<RssResponse> rssResponses = rssService.loadRssResponses(urls);
 
         Analysis analysis = Analysis.builder().rssRequest(urls).build();
 
-        Map<String, WordFrequency> wordsPerTitle = rssService.analyseRssResponseItems(analysis, titles);
+        Map<String, WordFrequency> wordsPerTitle = rssService.analyseRssResponseItems(analysis, rssResponses);
 
         analysisRepository.saveAndFlush(analysis);
         wordFrequencyRepository.saveAll(wordsPerTitle.values().stream().collect(Collectors.toList()));
