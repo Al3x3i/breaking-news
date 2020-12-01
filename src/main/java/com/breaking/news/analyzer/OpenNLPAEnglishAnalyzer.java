@@ -21,7 +21,7 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OpenNLPAEnglishAnalyzer {
 
-    public static List<String> getNounsFromText(String text) {
+    public static ArrayList<String> getNounsFromText(String text) {
 
         try {
             text = replaceAllSpecialCharacterByEmptyCharacter(text);
@@ -33,7 +33,7 @@ public class OpenNLPAEnglishAnalyzer {
             TokenStream tokenStream = analyzer.tokenStream("contents", new StringReader(text));
 
             List<String> allWords = analyzeText(analyzer, tokenStream);
-            List<String> validNouns = extractNounsFromText(tagger, allWords);
+            ArrayList<String> validNouns = extractNounsFromText(tagger, allWords);
 
             return validNouns;
 
@@ -57,11 +57,11 @@ public class OpenNLPAEnglishAnalyzer {
         return text.replaceAll("[^\\w\\s]", "");
     }
 
-    private static List<String> extractNounsFromText(POSTaggerME tagger, List<String> allWords) {
+    private static ArrayList<String> extractNounsFromText(POSTaggerME tagger, List<String> allWords) {
         String[] tokenizerLine = allWords.toArray(String[]::new);
         String[] tags = tagger.tag(tokenizerLine);
 
-        List<String> validNouns = new ArrayList<>();
+        ArrayList<String> validNouns = new ArrayList<>();
         for (int index = 0; index < tokenizerLine.length; index++) {
 
             if (tags[index].equals("NN")) {

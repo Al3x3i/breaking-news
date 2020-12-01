@@ -16,7 +16,6 @@ public class RssNewsLoader {
         try {
             try (XmlReader reader = new XmlReader(new URL(url))) {
                 SyndFeed feed = new SyndFeedInput().build(reader);
-                System.out.println(feed.getTitle());
                 for (SyndEntry entry : feed.getEntries()) {
                     response.getRssResponseItems().add(
                             RssItem.builder()

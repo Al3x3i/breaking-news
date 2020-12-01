@@ -13,15 +13,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.internal.util.collections.Sets;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
-@ExtendWith(MockitoExtension.class)
-public class RssServiceTest {
+@SpringBootTest
+public class RssServiceIntegrationTest {
 
+    @Autowired
+    private RssService rssService;
 
     private Map<String, WordFrequency> wordsPerTitle = new HashMap<>();
 
@@ -33,7 +35,7 @@ public class RssServiceTest {
         RssResponse rssResponse = RssNewsLoader.fetchTitlesFromXmlRss(samplePath);
 
         // WHEN
-        Map<String, WordFrequency> wordsFrequency = RssService.analyseRssResponseItems(new Analysis(), List.of(rssResponse));
+        Map<String, WordFrequency> wordsFrequency = rssService.analyseRssResponseItems(new Analysis(), List.of(rssResponse));
 
         // THEN
         thenVerifyWordsOrder(wordsFrequency);
