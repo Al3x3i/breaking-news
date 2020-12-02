@@ -1,6 +1,29 @@
 ## breaking-news project
 Breaking news project.
 
+## How to use
+
+### Run a Spring Boot App with Maven
+```
+mvn spring-boot:run
+```
+
+### Create breaking news analysis
+```
+curl --location --request POST 'localhost:8080/analyse/new' \
+--header 'Content-Type: application/json' \
+--data-raw '[
+    "https://news.google.com/news?cf=all&hl=en&pz=1&ned=us&output=rss",
+    "https://www.espn.com/espn/rss/news"
+]'
+```
+### Find the frequency of words in the titles of RSS feeds that are in the generated `breaking news analysis`
+```
+curl --location --request GET 'localhost:8080/frequency/1' \
+--header 'Content-Type: application/json' \
+--data-raw '["https://news.google.com/news?cf=all&hl=en&pz=1&ned=us&output=rss", "https://rss.msn.com/en-us"]'
+```
+
 ## Project consists of the following elements:
     - Maven Project
     - Spring boot 2.4.0
