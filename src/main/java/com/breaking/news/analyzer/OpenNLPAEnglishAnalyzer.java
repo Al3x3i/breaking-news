@@ -33,9 +33,7 @@ public class OpenNLPAEnglishAnalyzer {
             TokenStream tokenStream = analyzer.tokenStream("contents", new StringReader(text));
 
             List<String> allWords = analyzeText(analyzer, tokenStream);
-            ArrayList<String> validNouns = extractNounsFromText(tagger, allWords);
-
-            return validNouns;
+            return extractNounsFromText(tagger, allWords);
 
         } catch (IOException ex) {
             log.error("Error occurred while analyzing the text `{}`. Error message: `{}`", text, ex.getMessage());
@@ -74,7 +72,7 @@ public class OpenNLPAEnglishAnalyzer {
     private static List<String> analyzeText(Analyzer analyzer, TokenStream tokenStream) throws IOException {
         List<String> words = new ArrayList<>();
         CharTermAttribute term = tokenStream.addAttribute(CharTermAttribute.class);
-        try {
+        try (analyzer; tokenStream) {
             tokenStream.reset();
 
             while (tokenStream.incrementToken()) {
@@ -84,9 +82,6 @@ public class OpenNLPAEnglishAnalyzer {
             tokenStream.end();
         } catch (IOException ex) {
             log.error("Error occurred while extracting text from analyzer. `{}`", ex.getMessage());
-        } finally {
-            tokenStream.close();
-            analyzer.close();
         }
 
         return words;

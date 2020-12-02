@@ -30,7 +30,7 @@ public class BreakingNewsService {
     @Transactional
     public Long createNewsRecord(List<String> urls) {
         log.info("Start fetching the RSS feeds from urls: `{}` ", urls);
-        List<RssResponse> rssResponses = rssService.loadRssResponses(urls);
+        List<RssResponse> rssResponses = RssService.loadRssResponses(urls);
 
         Analysis analysis = Analysis.builder().rssRequest(urls).build();
 

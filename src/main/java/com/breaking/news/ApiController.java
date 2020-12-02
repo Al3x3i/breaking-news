@@ -38,7 +38,7 @@ public class ApiController {
         List<WordFrequency> wordFrequencies = breakingNewsService.findHotNewsById(id);
         TopNewsResponse response = new TopNewsResponse();
 
-        wordFrequencies.stream().forEach(wordFrequency -> {
+        wordFrequencies.forEach(wordFrequency -> {
 
             List<RssItem> rssItems = wordFrequency.getRssResponseItems()
                     .stream()

@@ -8,8 +8,8 @@ import lombok.Getter;
 @Getter
 public class RssResponse {
 
-    private String url;
-    private List<RssItem> rssResponseItems;
+    private final String url;
+    private final List<RssItem> rssResponseItems;
 
     public RssResponse(String url) {
         this.url = url;

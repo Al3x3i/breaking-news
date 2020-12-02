@@ -25,7 +25,7 @@ public class RssNewsLoader {
                 }
             }
         } catch (Exception ex) {
-            log.error("Error occurred while fetching titles from url: `{}`. Error message", url, ex.getMessage());
+            log.error("Error occurred while fetching titles from url: `{}`. Error message: `{}`", url, ex.getMessage());
             throw new RuntimeException(ex);
         }
         return response;
