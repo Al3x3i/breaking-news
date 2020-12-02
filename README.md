@@ -59,7 +59,6 @@ Below are listed links which were used while implementation:
 
 ### Use ExecutorService
 Analyse Rss titles asynchronously. \
-It reduced analyze time for two RSS websites from 30 seconds to 17 seconds. 
 
 ### Hints:
 #### H2 database client
