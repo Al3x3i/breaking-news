@@ -5,7 +5,7 @@ Breaking news project.
 
 ### Run a Spring Boot App with Maven
 ```
-mvn spring-boot:run
+./mvnw spring-boot:run
 ```
 
 ### Create breaking news analysis
